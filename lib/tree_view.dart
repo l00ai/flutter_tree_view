@@ -103,27 +103,29 @@ class TreeViewChildState extends State<TreeViewChild>
     super.didChangeDependencies();
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        RawGestureDetector(
-          gestures: {
-            AllowMultipleGestureRecognizer:
-                GestureRecognizerFactoryWithHandlers<
-                        AllowMultipleGestureRecognizer>(
-                    () => AllowMultipleGestureRecognizer(),
-                    (AllowMultipleGestureRecognizer instance) {
-              instance.onTap = widget.onTap ?? () => toggleExpanded();
-            }),
-          },
-          child: widget.parent,
+        Stack(
+          children: [
+            widget.parent,
+            Positioned(
+              left: 0,
+              right: 100,
+              top: 0,
+              bottom: 0,
+              child: GestureDetector(
+                onTap: widget.onTap ?? () => toggleExpanded(),
+                child: Container(
+                  color: Colors.transparent,
+                ),
+              ),
+            ),
+          ],
         ),
-        AnimatedSize(
-          vsync: this,
-          curve: Curves.easeIn,
-          duration: Duration(milliseconds: 400),
+        Container(
           child: isExpanded!
               ? Column(
                   mainAxisSize: MainAxisSize.min,
@@ -134,7 +136,6 @@ class TreeViewChildState extends State<TreeViewChild>
       ],
     );
   }
-
   void toggleExpanded() {
     setState(() {
       this.isExpanded = !this.isExpanded!;
